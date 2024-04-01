@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý sinh viên</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    .container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .error-msg {
+        color: red;
+        margin-bottom: 15px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container" id="loginContainer">
+    <h2>Đăng nhập</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="username">Tài khoản:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Mật khẩu:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Đăng nhập</button>
+        <p id="error-msg" class="error-msg"></p>
+    </form>
+</div>
+
+<div class="container" id="adminContainer" style="display: none;">
+    <h2>Quản lý sinh viên</h2>
+    <button onclick="showAddForm()">Thêm mới</button>
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên</th>
+                <th>Tuổi</th>
+                <th>Địa chỉ</th>
+                <th>SDT</th>
+                <th>Email</th>
+                <th>Lớp học</th>
+                <th>Chức năng</th>
+            </tr>
+        </thead>
+        <tbody id="studentList">
+            
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var students = []; 
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+
+        if (username === 'admin' && password === 'admin') {
+            document.getElementById('error-msg').innerText = '';
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminContainer').style.display = 'block';
+            showStudentList(); 
+        } else {
+            document.getElementById('error-msg').innerText = 'Tài khoản hoặc mật khẩu không chính xác';
+        }
+    });
+
+    function showStudentList() {
+        var studentTable = document.getElementById('studentList');
+        studentTable.innerHTML = ''; 
+        for (var i = 0; i < students.length; i++) {
+            var student = students[i];
+            var row = '<tr>';
+            row += '<td>' + (i + 1) + '</td>';
+            row += '<td>' + student.name + '</td>';
+            row += '<td>' + student.age + '</td>';
+            row += '<td>' + student.address + '</td>';
+            row += '<td>' + student.phone + '</td>';
+            row += '<td>' + student.email + '</td>';
+            row += '<td>' + student.class + '</td>';
+            row += '<td><button onclick="editStudent(' + i + ')">Sửa</button> <button onclick="deleteStudent(' + i + ')">Xóa</button></td>';
+            row += '</tr>';
+            studentTable.innerHTML += row;
+        }
+    }
+
+    function showAddForm() {
+        var name = prompt('Nhập tên sinh viên:');
+        var age = prompt('Nhập tuổi sinh viên:');
+        var address = prompt('Nhập địa chỉ sinh viên:');
+        var phone = prompt('Nhập số điện thoại sinh viên:');
+        var email = prompt('Nhập email sinh viên:');
+        var class_name = prompt('Nhập lớp học sinh viên:');
+        var newStudent = {
+            name: name,
+            age: age,
+            address: address,
+            phone: phone,
+            email: email,
+            class: class_name
+        };
+        students.push(newStudent); 
+        showStudentList(); 
+    }
+
+    function editStudent(index) {
+        var student = students[index];
+        var newName = prompt('Nhập tên mới:');
+        if (newName !== null) {
+            student.name = newName;
+        }
+        var newAge = prompt('Nhập tuổi mới:');
+        if (newAge !== null) {
+            student.age = newAge;
+        }
+        var newAddress = prompt('Nhập địa chỉ mới:');
+        if (newAddress !== null) {
+            student.address = newAddress;
+        }
+        var newPhone = prompt('Nhập số điện thoại mới:');
+        if (newPhone !== null) {
+            student.phone = newPhone;
+        }
+        var newEmail = prompt('Nhập email mới:');
+        if (newEmail !== null) {
+            student.email = newEmail;
+        }
+        var newClass = prompt('Nhập lớp học mới:');
+        if (newClass !== null) {
+            student.class = newClass;
+        }
+        showStudentList(); 
+    }
+
+    function deleteStudent(index) {
+        var confirmation = confirm('Bạn có chắc chắn muốn xóa sinh viên này?');
+        if (confirmation) {
+            students.splice(index, 1); 
+            showStudentList(); 
+        }
+    }
+</script>
+
+</body>
+</html>
